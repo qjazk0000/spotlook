@@ -1,12 +1,3 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, DeclarativeBase
-from app.core.config import settings
+from app.db import Base, SessionLocal, engine
 
-
-class Base(DeclarativeBase):
-    pass
-
-
-engine = create_engine(settings.core_database_url, pool_pre_ping=True)
-SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
-
+__all__ = ["Base", "SessionLocal", "engine"]
