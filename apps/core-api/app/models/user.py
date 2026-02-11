@@ -11,3 +11,4 @@ class User(Base):
     password_hash: Mapped[str] = mapped_column(String(255))
     
     posts = relationship("Post", back_populates="user", cascade="all, delete-orphan")
+    saves = relationship("Save", back_populates="user", cascade="all, delete-orphan")

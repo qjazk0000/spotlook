@@ -21,3 +21,4 @@ class PostTag(Base):
     
     post = relationship("Post", back_populates="post_tags")
     tag = relationship("Tag",back_populates="post_tags")
+    saves = relationship("Save", back_populates="post", cascade="all, delete-orphan")
