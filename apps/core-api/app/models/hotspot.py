@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from sqlalchemy import ForeignKey, String, DateTime, Float, func, Numeric
+from sqlalchemy import ForeignKey, String, DateTime, Float, func, CheckConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
@@ -8,6 +8,13 @@ from app.db.base import Base
 
 class Hotspot(Base):
     __tablename__ = "hotspots"
+    __table_args__ = (
+        CheckConstraint("x >= 0 AND x <= 1", name="ck_hotspots_x_0_1"),
+        CheckConstraint("y >= 0, AND y <= 1", name="ck_hotspots_y_0_1"),
+    )
+    
+    x: Mapped[float] = mapped_column(Float, nullable=False)
+    y: Mapped[float] = mapped_column(Float, nullable=False)
     
     id: Mapped[int] = mapped_column(primary_key=True)
     
@@ -16,10 +23,6 @@ class Hotspot(Base):
         nullable=False,
         index=True,
     )
-    
-    # 위도/경도: +/-180 범위, 소수 6자리면 약 0.11m 단위까지 표현 가능
-    x: Mapped[float] = mapped_column(Float, nullable=False)
-    y: Mapped[float] = mapped_column(Float, nullable=False)
     
     coord_space: Mapped[str] = mapped_column(
         String(20),

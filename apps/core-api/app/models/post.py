@@ -42,4 +42,5 @@ class Post(Base):
     
     user = relationship("User", back_populates="posts")
     hotspots = relationship("Hotspot", back_populates="post", cascade="all, delete-orphan")
+    post_tags = relationship("PostTag", back_populates="post", cascade="all, delete-orphan")
     
