@@ -24,12 +24,6 @@ class Hotspot(Base):
         index=True,
     )
     
-    coord_space: Mapped[str] = mapped_column(
-        String(20),
-        nullable=False,
-        server_default="normalized",
-    )
-    
     created_at: Mapped[DateTime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
