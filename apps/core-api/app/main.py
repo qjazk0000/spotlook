@@ -1,12 +1,26 @@
 import os
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.responses import Response
+
+from sqlalchemy import text
+from sqlalchemy.orm import Session
+
+from app.db.session import get_db
+
+from app.api.posts import router as posts_router
+from app.api.hotspots import router as hotspots_router
+
 from dotenv import load_dotenv
 from psycopg import connect
 
 load_dotenv()  # spotlook/.env 로컬 로드
 
 app = FastAPI(title="SpotLook Core API")
+
+# register routers
+app.include_router(posts_router)
+app.include_router(hotspots_router)
+
 
 @app.get("/health")
 def health():
@@ -26,4 +40,9 @@ def health_db():
         with conn.cursor() as cur:
             cur.execute("select 1;")
             return {"ok": True, "db": True}
+        
+@app.get("/health/db/sa")
+def health_db_sa(db: Session = Depends(get_db)):
+    db.execute(text("select 1"))
+    return {"ok": True, "db": True, "driver": "sqlalchemy"}
 
