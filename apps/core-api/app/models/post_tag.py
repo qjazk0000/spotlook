@@ -19,6 +19,6 @@ class PostTag(Base):
         primary_key=True,
     )
     
-    post = relationship("Post", back_populates="post_tags")
-    tag = relationship("Tag",back_populates="post_tags")
+    post: Mapped["Post"] = relationship("Post", back_populates="post_tags")
+    tag: Mapped["Tag"] = relationship("Tag", back_populates="post_tags")
     

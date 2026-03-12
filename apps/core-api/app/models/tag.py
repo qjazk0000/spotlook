@@ -20,5 +20,9 @@ class Tag(Base):
         nullable=False,
     )
     
-    post_tags = relationship("PostTag", back_populates="tag", cascade="all, delete-orphan")
+    post_tags: Mapped[list["PostTag"]] = relationship(
+        "PostTag",
+        back_populates="tag",
+        cascade="all, delete-orphan",
+        )
 

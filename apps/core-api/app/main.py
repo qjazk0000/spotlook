@@ -9,6 +9,7 @@ from app.db.session import engine
 
 from app.api.posts import router as posts_router
 from app.api.hotspots import router as hotspots_router
+from app.api.tags import router as tags_router
 
 from dotenv import load_dotenv
 
@@ -19,6 +20,7 @@ app = FastAPI(title="SpotLook Core API")
 # register routers
 app.include_router(posts_router)
 app.include_router(hotspots_router)
+app.include_router(tags_router)
 
 
 @app.get("/health")
