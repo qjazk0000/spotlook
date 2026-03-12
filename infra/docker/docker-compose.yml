@@ -11,7 +11,7 @@ services:
     volumes:
       - spotlook_pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "ph_isready -U spotlook -d spotlook"]
+      test: ["CMD-SHELL", "pg_isready -U spotlook -d spotlook"]
       interval: 5s
       timeout: 3s
       retries: 20
