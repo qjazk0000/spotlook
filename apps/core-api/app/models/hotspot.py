@@ -10,7 +10,7 @@ class Hotspot(Base):
     __tablename__ = "hotspots"
     __table_args__ = (
         CheckConstraint("x >= 0 AND x <= 1", name="ck_hotspots_x_0_1"),
-        CheckConstraint("y >= 0, AND y <= 1", name="ck_hotspots_y_0_1"),
+        CheckConstraint("y >= 0 AND y <= 1", name="ck_hotspots_y_0_1"),
     )
     
     x: Mapped[float] = mapped_column(Float, nullable=False)
