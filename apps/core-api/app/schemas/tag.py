@@ -12,7 +12,7 @@ class TagOut(BaseModel):
     model_config = {"from_attributes": True}
     
     
-class PostTagsAttachResponse(BaseModel):
+class PostTagsResponse(BaseModel):
     post_id: int
     tags: list[TagOut]
     

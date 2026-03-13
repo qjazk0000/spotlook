@@ -8,24 +8,52 @@ from app.db.session import get_db
 from app.models.post import Post
 from app.models.tag import Tag
 from app.models.post_tag import PostTag
-from app.schemas.tag import PostTagsAttachRequest, PostTagsAttachResponse, TagOut
+from app.schemas.tag import PostTagsAttachRequest, PostTagsResponse, TagOut
 
 router = APIRouter(prefix="/posts", tags=["tags"])
 
 def normalize_tag_name(name: str) -> str:
     return name.strip().lower()
 
+@router.get(
+    "/{post_id}/tags",
+    response_model=PostTagsResponse,
+    status_code=status.HTTP_200_OK,
+)
+def get_tags_of_post(
+    post_id: int,
+    db: Session = Depends(get_db),
+) -> PostTagsResponse:
+    post = db.get(Post, post_id)
+    if post is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Post {post_id} not found",
+        )
+        
+    tags = db.execute(
+        select(Tag)
+        .join(PostTag, PostTag.tag_id == Tag.id)
+        .where(PostTag.post_id == post_id)
+        .order_by(Tag.id.asc())
+    ).scalars().all()
+    
+    return PostTagsResponse(
+        post_id=post_id,
+        tags=[TagOut.model_validate(tag) for tag in tags],
+    )
+
 
 @router.post(
     "/{post_id}/tags",
-    response_model=PostTagsAttachResponse,
+    response_model=PostTagsResponse,
     status_code=status.HTTP_200_OK,
 )
 def attach_tags_to_post(
     post_id: int,
     payload: PostTagsAttachRequest,
     db: Session = Depends(get_db),
-) -> PostTagsAttachResponse:
+) -> PostTagsResponse:
     # 1) post 존재 확인
     post = db.get(Post, post_id)
     if not post:
@@ -97,7 +125,7 @@ def attach_tags_to_post(
     # 8) 응답용 태그 정렬
     result_tags = [all_tag_map[name] for name in normalized_names]
     
-    return PostTagsAttachResponse(
+    return PostTagsResponse(
         post_id=post_id,
         tags=[TagOut.model_validate(tag) for tag in result_tags],
     )
